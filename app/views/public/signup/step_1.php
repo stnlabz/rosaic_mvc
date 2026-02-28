@@ -2,9 +2,19 @@
 
 <div class="container signup-container">
     <h2>Step 1: Geographic Anchor</h2>
-    <p>Select your region to align with the local grid.</p>
+    <p>Select your region and contact details to align with the local grid.</p>
 
     <form action="<?php echo URLROOT; ?>/signup/step_1" method="POST">
+        <div class="form-group mb-3">
+            <label for="phone">Phone Number</label>
+            <input type="text" name="phone" id="phone" class="form-control" placeholder="for secure transmission..." required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="city">City</label>
+            <input type="text" name="city" id="city" class="form-control" placeholder="city of residence..." required>
+        </div>
+
         <div class="form-group mb-3">
             <label for="region_id">Region</label>
             <select name="region_id" id="region_id" class="form-control" required>
@@ -43,10 +53,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const rid = this.value;
         stateSelect.innerHTML = '<option value="">loading states...</option>';
         stateSelect.disabled = true;
-        
+        countySelect.innerHTML = '<option value="">select county...</option>';
+        countySelect.disabled = true;
+
         if (rid) {
-            // Added timestamp to URL to bypass browser stagnation
-            fetch('<?php echo URLROOT; ?>/signup/get_states/' + rid + '?t=' + Date.now())
+            fetch('<?php echo URLROOT; ?>/signup/get_states/' + rid)
                 .then(response => response.json())
                 .then(data => {
                     stateSelect.innerHTML = '<option value="">select state...</option>';
@@ -57,7 +68,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         stateSelect.appendChild(option);
                     });
                     stateSelect.disabled = false;
-                });
+                })
+                .catch(err => console.error('Error fetching states:', err));
         }
     });
 
@@ -67,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
         countySelect.disabled = true;
 
         if (sid) {
-            fetch('<?php echo URLROOT; ?>/signup/get_counties/' + sid + '?t=' + Date.now())
+            fetch('<?php echo URLROOT; ?>/signup/get_counties/' + sid)
                 .then(response => response.json())
                 .then(data => {
                     countySelect.innerHTML = '<option value="">select county...</option>';
@@ -78,7 +90,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         countySelect.appendChild(option);
                     });
                     countySelect.disabled = false;
-                });
+                })
+                .catch(err => console.error('Error fetching counties:', err));
         }
     });
 });

@@ -11,7 +11,7 @@
   <article>
     <h3>ARTICLE I: THE SUPREME SOVEREIGNTY</h3>
     <p><strong>Section 1.01</strong>: The Parent Authority, the organization known as Ars Rosaic, is established as the Parent Organization. It is the sole repository of the Tradition, the Rules, and the Jurisdictional reach of the organization.</p>
-    <p><strong>Section 1.02</strong>: The Office of the Madam, the highest office of the Ars Rosaic is held by the Madam. This office holds absolute authority over the Traditions and the Charter. To ensure the safety of the lineage, the individual holding this office remains anonymous in all public filings, represented only by the title and the legal shield of the Parent Organiztion.</p>
+    <p><strong>Section 1.02</strong>: The Office of the Madam, the highest office of the Ars Rosaic is held by the Madam. This office holds absolute authority over the Traditions and the Charter. To ensure the safety of the lineage, the individual holding this office remains anonymous in all public filings, represented only by the title and the legal shield of the Parent Organization.</p>
     <p><strong>Section 1.03</strong>: Recessional Flexibility. The Office of the Madam maintains the sovereign right to flex its legal and administrative nexus to any state within the Union of these United States upon recession or necessity. The Parent Organization’s seat may shift jurisdictions at the Madam's discretion to maintain the continuity of the Great Work.</p>
     </article>
   </div>
@@ -43,7 +43,7 @@
   <div class="row">
   <article>
     <h3>ARTICLE V: CONSTITUTIONAL COMPLIANCE</h3>
-    <p><strong>Section 5.01</strong>: Adherence to Law. This Charter is established to operate within the bounds of the U.S. Constitution and relavent State level Law, utilizing these laws to protect the privacy and religious autonomy of the Tradition.</p>
+    <p><strong>Section 5.01</strong>: Adherence to Law. This Charter is established to operate within the bounds of the U.S. Constitution and relavent State level Law, utilizing these laws to protect the privacy and autonomy of the Tradition.</p>
     </article>
   </div>
 

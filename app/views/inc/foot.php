@@ -29,7 +29,7 @@
                 <ul class="list-unstyled">
                   <li><a href="/legal/charter" class="text-decoration-none text-secondary">Charter</a></li>
                   <li><a href="/legal/privacy" class="text-decoration-none text-secondary">Privacy Policy</a></li>
-                  <li><a href="/legal/security" class="text-decoration-none text-secondary">Security Protocol</a></li>
+                  <li><a href="/security/protocol" class="text-decoration-none text-secondary">Security Protocol</a></li>
                   <li><a href="/legal/terms" class="text-decoration-none text-secondary">Terms of Service</a></li>
                 </ul>
             </div>

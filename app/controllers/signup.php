@@ -113,17 +113,25 @@ class signup extends controller {
         return ($day <= $signs[$month - 1][1]) ? $signs[$month - 1][0] : $signs[$month][0];
     }
 
-    public function get_states($rid) {
-        $model = $this->model('signup_model');
+    public function get_states($params): void
+    {
+        $rid = $params[2] ?? 0;
+
         header('Content-Type: application/json');
-        echo json_encode($model->get_states_by_region((int)$rid));
+        echo json_encode(
+            $this->model('signup_model')->get_states_by_region((int)$rid)
+        );
         exit;
     }
 
-    public function get_counties($sid) {
-        $model = $this->model('signup_model');
+    public function get_counties($params): void
+    {
+        $sid = $params[2] ?? 0;
+
         header('Content-Type: application/json');
-        echo json_encode($model->get_counties_by_state((int)$sid));
+        echo json_encode(
+            $this->model('signup_model')->get_counties_by_state((int)$sid)
+        );
         exit;
     }
 }

@@ -1,0 +1,60 @@
+<?php
+
+class signup_model extends model
+{
+    public function get_regions(): array
+    {
+        return $this->fetchAll(
+            "SELECT id, name FROM regions ORDER BY id ASC"
+        );
+    }
+
+    public function get_states_by_region(int $rid): array
+    {
+        return $this->fetchAll(
+            "SELECT id, name FROM states WHERE region_id = ? ORDER BY name ASC",
+            [$rid]
+        );
+    }
+
+    public function get_counties_by_state(int $sid): array
+    {
+        return $this->fetchAll(
+            "SELECT id, name FROM counties WHERE state_id = ? ORDER BY name ASC",
+            [$sid]
+        );
+    }
+
+    public function register_final_member(array $data)
+    {
+        $sql = "INSERT INTO members (
+            legal_name_encrypted, chosen_name, sex, initials_display,
+            contact_text, birth_date, birth_number, zodiac_name,
+            region_id, state_id, county_id,
+            municipality, address, zip,
+            lat, lon, mgrs_coord
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+        $this->query($sql, [
+            $data['legal_name_encrypted'],
+            $data['chosen_name'],
+            $data['sex'],
+            $data['initials_display'],
+            $data['contact_text'],
+            $data['birth_date'],
+            $data['birth_number'],
+            $data['zodiac_name'],
+            $data['region_id'],
+            $data['state_id'],
+            $data['county_id'],
+            $data['municipality'],
+            $data['address'],
+            $data['zip'],
+            $data['lat'],
+            $data['lon'],
+            $data['mgrs_coord']
+        ]);
+
+        return $this->db->lastInsertId();
+    }
+}

@@ -19,7 +19,7 @@
     <img src="/assets/img/seeker/wtf-2.png" class="wrap-right" alt="chaos">
     <h3>Have you ever wondered...</h3>
       <p>If all that you have been told by the Church, your Parents, and Society is perhaps... just a little too much? not your thing? The world tries to dictate your path before you even find your feet?</p>
-      <p>Welcome Seeker, click <strong><a href="/seeker">Here</a></strong></p>
+      <p>Welcome Seeker, click <strong><a href="/learn/seeker">Here</a></strong></p>
   </div>
 </section>
 
@@ -29,10 +29,10 @@
     <h2>Covens</h2>
     <p>Covens are the rock, the soul of this tradition.</p>
     <p>For it is there in the circle, in the living room, and in society that the Sovereign and Unity exist.</p>
-    <p>Please see the <strong><a href="/codex">Codex</a></strong> regarding Coven structure</p>
+    <p>Please see the <strong><a href="/learn/codex">Codex</a></strong> regarding Coven structure</p>
     <p>
     <ul>
-      <li> <strong><a href="/covens/">Gather</a></strong> or <strong><a href="/covens">Charter</a></strong> your circle.</li>
+      <!--<li> <strong><a href="/covens/">Gather</a></strong> or <strong><a href="/covens">Charter</a></strong> your circle.</li>-->
     </ul>
     </p>
     <p>A Coven is <strong>thirteen</strong>, NO more and no less</p>

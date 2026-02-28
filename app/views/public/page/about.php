@@ -6,6 +6,14 @@
       <h2>About Ars Rosaic</h2>
       <p>This Tradition is not built upon any other Religion, Sect or Way of Life other than pure experience and shared through literature and online content from beginning to end to ensure that all are educated in their own Sovereignty. With it not being a Religion, the word "Ritual" is never used and common sense, along with the Keep it Stupid Simple theory, is how to make it your own, within a structured, disciplined tradition.</p>
     </section>
+  </div>
+  <div clas"row">
+    <section>
+      <h2>Contact</h2>
+      <p><strong>Main Email</strong>: office@arsrosaic.org</a>
+    </section>
+  </div>
+  <div class="row">
     <section class="hierarchy-definitions">
       <h2>The Coven Structure</h2>
       <p>A Year, and a Day, that is the rule.</p>
