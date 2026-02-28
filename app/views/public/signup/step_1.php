@@ -1,69 +1,87 @@
 <?php require APPROOT . '/views/inc/head.php'; ?>
-<h2>Step 1: Geographic Anchor</h2>
 
-<form id="signup_form" method="POST" action="<?= URLROOT; ?>/signup/step_1">
-    
-    <label for="region_id">Region</label>
-    <select id="region_id" name="region_id" required>
-        <option value="">Select Region...</option>
-        <?php foreach($data['regions'] as $region): ?>
-            <option value="<?= $region['id']; ?>"><?= ucfirst($region['name']); ?></option>
-        <?php endforeach; ?>
-    </select>
+<div class="container signup-container">
+    <h2>Step 1: Geographic Anchor</h2>
+    <p>Select your region to align with the local grid.</p>
 
-    <label for="state_id">State</label>
-    <select id="state_id" name="state_id" required disabled>
-        <option value="">Select Region First...</option>
-    </select>
+    <form action="<?php echo URLROOT; ?>/signup/step_1" method="POST">
+        <div class="form-group mb-3">
+            <label for="region_id">Region</label>
+            <select name="region_id" id="region_id" class="form-control" required>
+                <option value="">select region...</option>
+                <?php foreach($data['regions'] as $region): ?>
+                    <option value="<?php echo $region['id']; ?>"><?php echo $region['name']; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
 
-    <label for="county_id">County/Parish</label>
-    <select id="county_id" name="county_id" required disabled>
-        <option value="">Select State First...</option>
-    </select>
+        <div class="form-group mb-3">
+            <label for="state_id">State</label>
+            <select name="state_id" id="state_id" class="form-control" required disabled>
+                <option value="">select state...</option>
+            </select>
+        </div>
 
-    <button type="submit">Proceed to Step 2</button>
-</form>
+        <div class="form-group mb-4">
+            <label for="county_id">County</label>
+            <select name="county_id" id="county_id" class="form-control" required disabled>
+                <option value="">select county...</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Proceed to Step 2</button>
+    </form>
+</div>
 
 <script>
-const root = '<?= URLROOT; ?>';
-const regionSelect = document.querySelector('#region_id');
-const stateSelect = document.querySelector('#state_id');
-const countySelect = document.querySelector('#county_id');
+document.addEventListener('DOMContentLoaded', function() {
+    const regionSelect = document.getElementById('region_id');
+    const stateSelect = document.getElementById('state_id');
+    const countySelect = document.getElementById('county_id');
 
-regionSelect.addEventListener('change', function() {
-    stateSelect.innerHTML = '<option value="">loading...</option>';
-    stateSelect.disabled = true;
-    if (this.value) {
-        fetch(`${root}/signup/get_states/${this.value}`)
-            .then(res => res.json())
-            .then(data => {
-                stateSelect.innerHTML = '<option value="">select state...</option>';
-                data.forEach(state => {
-                    let opt = document.createElement('option');
-                    opt.value = state.id; opt.text = state.name;
-                    stateSelect.add(opt);
+    regionSelect.addEventListener('change', function() {
+        const rid = this.value;
+        stateSelect.innerHTML = '<option value="">loading states...</option>';
+        stateSelect.disabled = true;
+        
+        if (rid) {
+            // Added timestamp to URL to bypass browser stagnation
+            fetch('<?php echo URLROOT; ?>/signup/get_states/' + rid + '?t=' + Date.now())
+                .then(response => response.json())
+                .then(data => {
+                    stateSelect.innerHTML = '<option value="">select state...</option>';
+                    data.forEach(state => {
+                        const option = document.createElement('option');
+                        option.value = state.id;
+                        option.textContent = state.name;
+                        stateSelect.appendChild(option);
+                    });
+                    stateSelect.disabled = false;
                 });
-                stateSelect.disabled = false;
-            });
-    }
-});
+        }
+    });
 
-stateSelect.addEventListener('change', function() {
-    countySelect.innerHTML = '<option value="">loading...</option>';
-    countySelect.disabled = true;
-    if (this.value) {
-        fetch(`${root}/signup/get_counties/${this.value}`)
-            .then(res => res.json())
-            .then(data => {
-                countySelect.innerHTML = '<option value="">select county...</option>';
-                data.forEach(county => {
-                    let opt = document.createElement('option');
-                    opt.value = county.id; opt.text = county.name;
-                    countySelect.add(opt);
+    stateSelect.addEventListener('change', function() {
+        const sid = this.value;
+        countySelect.innerHTML = '<option value="">loading counties...</option>';
+        countySelect.disabled = true;
+
+        if (sid) {
+            fetch('<?php echo URLROOT; ?>/signup/get_counties/' + sid + '?t=' + Date.now())
+                .then(response => response.json())
+                .then(data => {
+                    countySelect.innerHTML = '<option value="">select county...</option>';
+                    data.forEach(county => {
+                        const option = document.createElement('option');
+                        option.value = county.id;
+                        option.textContent = county.name;
+                        countySelect.appendChild(option);
+                    });
+                    countySelect.disabled = false;
                 });
-                countySelect.disabled = false;
-            });
-    }
+        }
+    });
 });
 </script>
+
 <?php require APPROOT . '/views/inc/foot.php'; ?>
