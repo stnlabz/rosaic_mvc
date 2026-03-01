@@ -6,4 +6,4 @@ This Tradition is not built upon any other Religion, Sect or Way of Life other t
 ----------
 
 ## NOTICE
-**Ars Rosaic** and the **Indicia Institute** are directly related.
+**Ars Rosaic** and the **<a href="https://www.arsrosaic.org/s/indicia">Indicia Institute</a>** are directly related.
