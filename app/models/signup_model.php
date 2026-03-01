@@ -26,15 +26,12 @@ class signup_model extends model
 
     public function register_final_member($data)
     {
-        // birth_number must exist or everything downstream becomes NULL
         $birth_number = (int)($data['birth_number'] ?? 0);
 
-        // references (1-9 style mapping)
         $rune   = $this->fetch("SELECT id FROM rune_reference WHERE id = :v LIMIT 1",   ['v' => $birth_number]);
         $ogham  = $this->fetch("SELECT id FROM ogham_reference WHERE id = :v LIMIT 1",  ['v' => $birth_number]);
         $rosaic = $this->fetch("SELECT id FROM rosaic_reference WHERE id = :v LIMIT 1", ['v' => $birth_number]);
 
-        // optional if table exists
         $tarot = null;
         try {
             $tarot = $this->fetch("SELECT id FROM tarot_reference WHERE id = :v LIMIT 1", ['v' => $birth_number]);
@@ -42,44 +39,58 @@ class signup_model extends model
             $tarot = null;
         }
 
-        // --- geo_cache (internal spatial anchor, no external API) ------------
+        // ---------------------------
+        // GEO CACHE (zip included)
+        // ---------------------------
+
         $address      = trim((string)($data['address'] ?? ''));
         $municipality = trim((string)($data['municipality'] ?? ''));
         $zip_code     = trim((string)($data['zip_code'] ?? ''));
-        $addr_key     = strtolower(trim($address) . trim($municipality) . trim($zip_code));
-        $address_hash = md5($addr_key);
 
-        if ($address_hash && $address !== '' && $municipality !== '') {
+        $normalized   = strtolower($address . $municipality . $zip_code);
+        $address_hash = md5($normalized);
+
+        if ($address && $municipality && $zip_code) {
+
             $geo = $this->fetch(
-                "SELECT lat, lon, mgrs_coord, is_locked FROM geo_cache WHERE address_hash = :h LIMIT 1",
+                "SELECT lat, lon, mgrs_coord FROM geo_cache WHERE address_hash = :h LIMIT 1",
                 ['h' => $address_hash]
             );
 
-            // If we have a cached point, use it (only if caller didn't already supply lat/lon/mgrs)
-            if (is_array($geo) && !empty($geo)) {
-                if (empty($data['lat']) && isset($geo['lat'])) {
+            if ($geo) {
+                if (empty($data['lat'])) {
                     $data['lat'] = $geo['lat'];
                 }
-                if (empty($data['lon']) && isset($geo['lon'])) {
+                if (empty($data['lon'])) {
                     $data['lon'] = $geo['lon'];
                 }
-                if (empty($data['mgrs_coord']) && isset($geo['mgrs_coord'])) {
+                if (empty($data['mgrs_coord'])) {
                     $data['mgrs_coord'] = $geo['mgrs_coord'];
                 }
             } else {
-                // Insert a placeholder cache record for later enrichment (Squire can lock/verify)
+
                 $this->query(
-                    "INSERT INTO geo_cache (address_hash, full_address, municipality, lat, lon, mgrs_coord, is_locked)
-                     VALUES (:h, :full, :muni, NULL, NULL, NULL, 0)
-                     ON DUPLICATE KEY UPDATE full_address = VALUES(full_address), municipality = VALUES(municipality)",
+                    "INSERT INTO geo_cache 
+                        (address_hash, full_address, municipality, zip_code, lat, lon, mgrs_coord, is_locked)
+                     VALUES 
+                        (:hash, :full, :muni, :zip, NULL, NULL, NULL, 0)
+                     ON DUPLICATE KEY UPDATE 
+                        full_address = VALUES(full_address),
+                        municipality = VALUES(municipality),
+                        zip_code = VALUES(zip_code)",
                     [
-                        'h'    => $address_hash,
+                        'hash' => $address_hash,
                         'full' => $address,
-                        'muni' => $municipality
+                        'muni' => $municipality,
+                        'zip'  => $zip_code
                     ]
                 );
             }
         }
+
+        // ---------------------------
+        // MEMBER INSERT
+        // ---------------------------
 
         $sql = "INSERT INTO members (
                     legal_name_encrypted,
@@ -132,38 +143,28 @@ class signup_model extends model
                 )";
 
         $params = [
-            'legal'       => $data['legal_name'] ?? null,
-            'chosen'      => $data['chosen_name'] ?? null,
-            'initials'    => $data['initials'] ?? null,
-
-            // keep if your schema enforces NOT NULL; otherwise harmless
-            'sex'         => $data['sex'] ?? '',
-
-            // controller stores dob, model inserts birth_date
-            'dob'         => $data['dob'] ?? null,
-
-            'birth_num'   => $birth_number,
-
-            'rune'        => $rune['id'] ?? null,
-            'ogham'       => $ogham['id'] ?? null,
-            'rosaic'      => $rosaic['id'] ?? null,
-            'tarot'       => $tarot['id'] ?? null,
-
-            'rid'         => (int)($data['region_id'] ?? 0),
-            'sid'         => (int)($data['state_id'] ?? 0),
-            'cid'         => (int)($data['county_id'] ?? 0),
-
-            'address'     => $data['address'] ?? '',
-            'municipality'=> $data['municipality'] ?? '',
-            'zip_code'    => $data['zip_code'] ?? '',
-
-            'mgrs'        => $data['mgrs_coord'] ?? null,
-            'contact'     => $data['contact_text'] ?? null,
-            'zodiac'      => $data['zodiac'] ?? '',
-
-            'lat'         => $data['lat'] ?? null,
-            'lon'         => $data['lon'] ?? null,
-            'is_v'        => $data['is_v'] ?? 0,
+            'legal'        => $data['legal_name'] ?? null,
+            'chosen'       => $data['chosen_name'] ?? null,
+            'initials'     => $data['initials'] ?? null,
+            'sex'          => $data['sex'] ?? '',
+            'dob'          => $data['dob'] ?? null,
+            'birth_num'    => $birth_number,
+            'rune'         => $rune['id'] ?? null,
+            'ogham'        => $ogham['id'] ?? null,
+            'rosaic'       => $rosaic['id'] ?? null,
+            'tarot'        => $tarot['id'] ?? null,
+            'rid'          => (int)($data['region_id'] ?? 0),
+            'sid'          => (int)($data['state_id'] ?? 0),
+            'cid'          => (int)($data['county_id'] ?? 0),
+            'address'      => $address,
+            'municipality' => $municipality,
+            'zip_code'     => $zip_code,
+            'is_v'         => $data['is_v'] ?? 0,
+            'mgrs'         => $data['mgrs_coord'] ?? null,
+            'contact'      => $data['contact_text'] ?? null,
+            'zodiac'       => $data['zodiac'] ?? '',
+            'lat'          => $data['lat'] ?? null,
+            'lon'          => $data['lon'] ?? null
         ];
 
         $this->query($sql, $params);

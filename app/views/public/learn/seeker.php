@@ -41,6 +41,7 @@
         <strong>b.</strong> A year and a day is the standard measure of development.
         </p>
         <p>As we never know where in Life a seeker may be, as a youth, a lost adult, a runaway from Religion or any other, this Doctrine of time becomes flexible until you are ready, and only you will know when you are ready.</p>
+        <p>Sign up <strong><a href="/signup">Here</a></strong></p>
     </section>
  </div>     
 </main>
