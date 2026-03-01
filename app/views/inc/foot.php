@@ -13,15 +13,7 @@
                   <li><a href="/" class="text-decoration-none text-secondary">Home</a></li>
                   <li><a href="/org/about" class="text-decoration-none text-secondary">About</a></li>
                   <li><a href="/org" class="text-decoration-none text-secondary">Explore</a></li>
-                  <li><a href="/org/jobs" class="text-decoration-none text-secondary">Jobs</a></li>
-                  <!--
-                  <li><a href="/curriculum" class="text-decoration-none text-secondary">Curriculum</a></li>
-                  <li><a href="/correspondence" class="text-decoration-none text-secondary">Correspondence</a></li>
-                  <li><a href="/bylaws" class="text-decoration-none text-secondary">Bylaws</a></li>
-                  <li><a href="/offices" class="text-decoration-none text-secondary">Departments</a></li>
-                  <li><a href="/mission" class="text-decoration-none text-secondary">Our Mission</a></li>
-                  <li><a href="/rolls" class="text-decoration-none text-secondary">Public Rolls</a></li>
-                  -->
+                  <li><a href="/studies" class="text-decoration-none text-secondary">R&D</a></li
                 </ul>
             </div>
 

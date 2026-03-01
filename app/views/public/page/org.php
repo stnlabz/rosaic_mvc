@@ -19,33 +19,27 @@
     <section>
      <h2>Knowledge</h2>
      <p>Learning the Structure of the Tradition</p>
-     <p>
-       <ul>
-         <li><a href="/learn">Tradition Knowledge</a></li>
-       </ul>
-     </p>
+     <p><a href="/learn">Traditional KNowledge</a></p>
    </section>
    </div>
    <div class="row">
     <section>
      <h2>Legal</h2>
      <p>The Legal Structure of the Tradition</p>
-     <p>
-       <ul>
-         <li><a href="/legal">Tradition Legal</a></li>
-       </ul>
-     </p>
+     <p><a href="/legal">Organization Legal</a></p>
    </section>
    </div>
    <div class="row">
     <section>
      <h2>Security</h2>
      <p>Learning the Security stance of the Tradition</p>
-     <p>
-       <ul>
-         <li><a href="/security">Tradition Domain Security</a></li>
-       </ul>
-     </p>
+     <p><a href="/security">Domain Security</a></p>
+   </section>
+   </div>
+   <div class="row">
+    <section>
+     <h2>Studies</h2>
+     <p><a href="/studies">Current Studies</></p>
    </section>
    </div>
 </div>

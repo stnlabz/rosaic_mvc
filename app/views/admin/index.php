@@ -3,8 +3,16 @@
     
     <div class="text-center mb-5">
         <h1 class="fw-bold text-uppercase">Oversight</h1>
-        <p class="text-muted small">Indicia Institute Management Suite</p>
+        <p class="text-muted small">Ars Rosaic Management Suite</p>
     </div>
+    
+    <?php if (!empty($_SESSION['admin_message'])): ?>
+    <div class="admin-message">
+        <span><?= $_SESSION['admin_message']; ?></span>
+        <button class="close-btn">&times;</button>
+    </div>
+    <?php unset($_SESSION['admin_message']); ?>
+    <?php endif; ?>
 
     <div class="row g-4 justify-content-center mb-5">
         <?php
@@ -50,4 +58,10 @@
         </div>
     </div>
 </div>
+
+<script>
+document.querySelector('.close-btn')?.addEventListener('click', function() {
+    this.parentElement.remove();
+});
+</script>
 <?php require APPROOT . '/views/inc/foot.php'; ?>
