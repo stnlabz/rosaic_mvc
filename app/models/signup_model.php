@@ -116,7 +116,7 @@ class signup_model extends model
 
             'address'     => $data['address'] ?? '',
             'municipality'=> $data['municipality'] ?? '',
-            'zip_code'    => $data['zip'] ?? '',
+            'zip_code'    => $data['zip_code'] ?? '',
 
             'mgrs'        => $data['mgrs_coord'] ?? null,
             'contact'     => $data['contact_text'] ?? null,
@@ -124,6 +124,7 @@ class signup_model extends model
 
             'lat'         => $data['lat'] ?? null,
             'lon'         => $data['lon'] ?? null,
+            'is_v'        => $data['is_v'] ?? 0,
         ];
 
         $this->query($sql, $params);
