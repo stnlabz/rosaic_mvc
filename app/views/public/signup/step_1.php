@@ -22,7 +22,7 @@
 
         <div class="form-group mb-3">
             <label for="zip">ZIP Code</label>
-            <input type="text" name="zip" id="zip" class="form-control" placeholder="zip..." required>
+            <input type="text" name="zip_code" id="zip_code" class="form-control" placeholder="zip..." required>
         </div>
 
         <div class="form-group mb-3">

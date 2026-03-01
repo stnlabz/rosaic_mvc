@@ -18,7 +18,7 @@ class signup extends controller
                 'contact_text' => trim((string)($_POST['phone'] ?? '')),
                 'municipality' => trim((string)($_POST['city'] ?? '')),
                 'address'      => trim((string)($_POST['address'] ?? '')),
-                'zip'          => trim((string)($_POST['zip'] ?? '')),
+                'zip_code'     => trim((string)($_POST['zip_code'] ?? '')),
                 'is_v' 	       => (int)($_POST['is_v'] ?? 0),
 
                 // selectors
