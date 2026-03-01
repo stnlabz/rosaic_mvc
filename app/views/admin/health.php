@@ -1,4 +1,5 @@
 <?php require APPROOT . '/views/inc/head.php'; ?>
+<p><small><a href="/admin">Admin</a> >> <strong>Health</strong></small></p>
 <div class="container py-5">
     <div class="mb-5 text-center">
         <h2 class="fw-bold">System Health</h2>

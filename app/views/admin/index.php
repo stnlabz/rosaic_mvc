@@ -2,17 +2,40 @@
 <div class="container py-5">
     
     <div class="text-center mb-5">
-        <h1 class="fw-bold text-uppercase">Oversight</h1>
+        <h1 class="fw-bold text-uppercase">Admin</h1>
         <p class="text-muted small">Ars Rosaic Management Suite</p>
     </div>
     
-    <?php if (!empty($_SESSION['admin_message'])): ?>
-    <div class="admin-message">
-        <span><?= $_SESSION['admin_message']; ?></span>
-        <button class="close-btn">&times;</button>
+    <?php if (!empty($_SESSION['admin_status'])): ?>
+    <div id="admin-status"
+         style="position: relative;
+                background-color: #e9f5ec;
+                color: #1e4620;
+                padding: 15px 40px 15px 15px;
+                border: 1px solid #c3e6cb;
+                border-radius: 4px;
+                margin-bottom: 20px;">
+
+        <strong>System Protocol:</strong>
+        <?= htmlspecialchars($_SESSION['admin_status']); ?>
+
+        <!-- Close Button -->
+        <button onclick="document.getElementById('admin-status').remove();"
+                style="position: absolute;
+                       right: 10px;
+                       top: 8px;
+                       background: none;
+                       border: none;
+                       font-size: 18px;
+                       font-weight: bold;
+                       cursor: pointer;
+                       color: #1e4620;">
+            &times;
+        </button>
     </div>
-    <?php unset($_SESSION['admin_message']); ?>
-    <?php endif; ?>
+
+    <?php unset($_SESSION['admin_status']); ?>
+<?php endif; ?>
 
     <div class="row g-4 justify-content-center mb-5">
         <?php
@@ -58,10 +81,5 @@
         </div>
     </div>
 </div>
-
-<script>
-document.querySelector('.close-btn')?.addEventListener('click', function() {
-    this.parentElement.remove();
-});
-</script>
+<p><small><a href="/logout">Logout</a></small></p>
 <?php require APPROOT . '/views/inc/foot.php'; ?>

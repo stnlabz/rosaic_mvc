@@ -4,27 +4,42 @@
 class admin extends controller 
 {
     public function index($url = []) 
-    {
-        if (!isset($_SESSION['user_level']) || $_SESSION['user_level'] < 7) {
-            header("Location: /auth/login");
-            exit;
-        }
+{
+    if (!isset($_SESSION['user_level']) || $_SESSION['user_level'] < 7) {
+        header("Location: /auth/login");
+        exit;
+    }
 
-        $module_slug = $url[1] ?? null;
+    $module_slug = $url[1] ?? null;
 
-        if ($module_slug && file_exists('../app/controllers/' . $module_slug . '.php')) {
-            require_once '../app/controllers/' . $module_slug . '.php';
+    if ($module_slug) {
+        $file_path = '../app/controllers/' . $module_slug . '.php';
+        
+        // 1. Check if the file actually exists [cite: 2026-01-22]
+        if (file_exists($file_path)) {
+            require_once $file_path;
             if (class_exists($module_slug)) {
                 $controller = new $module_slug();
+                // 2. Only execute if the admin method is present
                 if (method_exists($controller, 'admin')) {
                     $controller->admin($url);
                     return;
                 }
             }
+        } else {
+            // 3. GHOST DISCOVERY: If file is missing but slug was requested, prune the DB
+            $module_model = $this->model('modules_model');
+            $module_model->delete('modules', "slug = '$module_slug'");
+            
+            // Set a flash message for the Madam to confirm the cleanup
+            $_SESSION['admin_status'] = "Squire Alert: Orphaned module '$module_slug' was detected and pruned from the index.";
+            header("Location: /admin");
+            exit;
         }
-
-        $this->view('admin/index');
     }
+
+    $this->view('admin/index');
+}
 
     public function refresh_indices() 
     {

@@ -1,5 +1,5 @@
 <?php require APPROOT . '/views/inc/head.php'; ?>
-
+<p><small><a href="/admin">Admin</a> >> <strong>Modules</strong></small></p>
 <div class="container py-5">
     <div class="mb-5">
         <h2 class="fw-bold">Module Registry</h2>
