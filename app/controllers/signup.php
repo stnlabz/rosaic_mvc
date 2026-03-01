@@ -19,7 +19,7 @@ class signup extends controller
                 'municipality' => trim((string)($_POST['city'] ?? '')),
                 'address'      => trim((string)($_POST['address'] ?? '')),
                 'zip_code'     => trim((string)($_POST['zip_code'] ?? '')),
-                'is_v' 	       => (int)($_POST['is_v'] ?? 0),
+                'is_v'         => (int)($_POST['is_v'] ?? 0),
 
                 // selectors
                 'region_id' => (int)($_POST['region_id'] ?? 0),
@@ -84,9 +84,9 @@ class signup extends controller
 
         $questions = [
             0 => "state your legal name for encryption.",
-            1 => "do you believe in wiccan and neo-pagan ranks?",
-            2 => "identify your chosen name and initials.",
-            3 => "verify your choice to walk a path to sovereignty"
+            1 => "do you believe in wiccan and neo-pagan ranks, such as High Priestess or Arch Druid?",
+            2 => "identify your chosen name and initials. (Seperate with a Comma)",
+            3 => "verify your choice to walk a path to sovereignty, Yes or No"
         ];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

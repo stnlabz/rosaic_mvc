@@ -42,6 +42,45 @@ class signup_model extends model
             $tarot = null;
         }
 
+        // --- geo_cache (internal spatial anchor, no external API) ------------
+        $address      = trim((string)($data['address'] ?? ''));
+        $municipality = trim((string)($data['municipality'] ?? ''));
+        $zip_code     = trim((string)($data['zip_code'] ?? ''));
+        $addr_key     = strtolower(trim($address) . trim($municipality) . trim($zip_code));
+        $address_hash = md5($addr_key);
+
+        if ($address_hash && $address !== '' && $municipality !== '') {
+            $geo = $this->fetch(
+                "SELECT lat, lon, mgrs_coord, is_locked FROM geo_cache WHERE address_hash = :h LIMIT 1",
+                ['h' => $address_hash]
+            );
+
+            // If we have a cached point, use it (only if caller didn't already supply lat/lon/mgrs)
+            if (is_array($geo) && !empty($geo)) {
+                if (empty($data['lat']) && isset($geo['lat'])) {
+                    $data['lat'] = $geo['lat'];
+                }
+                if (empty($data['lon']) && isset($geo['lon'])) {
+                    $data['lon'] = $geo['lon'];
+                }
+                if (empty($data['mgrs_coord']) && isset($geo['mgrs_coord'])) {
+                    $data['mgrs_coord'] = $geo['mgrs_coord'];
+                }
+            } else {
+                // Insert a placeholder cache record for later enrichment (Squire can lock/verify)
+                $this->query(
+                    "INSERT INTO geo_cache (address_hash, full_address, municipality, lat, lon, mgrs_coord, is_locked)
+                     VALUES (:h, :full, :muni, NULL, NULL, NULL, 0)
+                     ON DUPLICATE KEY UPDATE full_address = VALUES(full_address), municipality = VALUES(municipality)",
+                    [
+                        'h'    => $address_hash,
+                        'full' => $address,
+                        'muni' => $municipality
+                    ]
+                );
+            }
+        }
+
         $sql = "INSERT INTO members (
                     legal_name_encrypted,
                     chosen_name,
@@ -100,7 +139,7 @@ class signup_model extends model
             // keep if your schema enforces NOT NULL; otherwise harmless
             'sex'         => $data['sex'] ?? '',
 
-            // this is the actual bug: controller stores dob, model inserts birth_date
+            // controller stores dob, model inserts birth_date
             'dob'         => $data['dob'] ?? null,
 
             'birth_num'   => $birth_number,
