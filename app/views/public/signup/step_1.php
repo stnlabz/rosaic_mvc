@@ -11,15 +11,25 @@
         </div>
 
         <div class="form-group mb-3">
+            <label for="address">Street Address</label>
+            <input type="text" name="address" id="address" class="form-control" placeholder="street address..." required>
+        </div>
+
+        <div class="form-group mb-3">
             <label for="city">City</label>
             <input type="text" name="city" id="city" class="form-control" placeholder="city of residence..." required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="zip">ZIP Code</label>
+            <input type="text" name="zip" id="zip" class="form-control" placeholder="zip..." required>
         </div>
 
         <div class="form-group mb-3">
             <label for="region_id">Region</label>
             <select name="region_id" id="region_id" class="form-control" required>
                 <option value="">select region...</option>
-                <?php foreach($data['regions'] as $region): ?>
+                <?php foreach ($data['regions'] as $region): ?>
                     <option value="<?php echo $region['id']; ?>"><?php echo $region['name']; ?></option>
                 <?php endforeach; ?>
             </select>
@@ -38,6 +48,14 @@
                 <option value="">select county...</option>
             </select>
         </div>
+        
+        <div class="form-group mb-3">
+    <label>Are you a Military Veteran?</label>
+    <select name="is_v" class="form-control">
+        <option value="0" selected>No</option>
+        <option value="1">Yes</option>
+    </select>
+</div>
 
         <button type="submit" class="btn btn-primary w-100">Proceed to Step 2</button>
     </form>
@@ -57,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         countySelect.disabled = true;
 
         if (rid) {
-            fetch('<?php echo URLROOT; ?>/signup/get_states/' + rid)
+            fetch('<?php echo URLROOT; ?>/signup/get_states/' + rid + '?t=' + Date.now())
                 .then(response => response.json())
                 .then(data => {
                     stateSelect.innerHTML = '<option value="">select state...</option>';
@@ -79,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
         countySelect.disabled = true;
 
         if (sid) {
-            fetch('<?php echo URLROOT; ?>/signup/get_counties/' + sid)
+            fetch('<?php echo URLROOT; ?>/signup/get_counties/' + sid + '?t=' + Date.now())
                 .then(response => response.json())
                 .then(data => {
                     countySelect.innerHTML = '<option value="">select county...</option>';

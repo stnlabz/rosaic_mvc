@@ -1,23 +1,28 @@
 <?php require APPROOT . '/views/inc/head.php'; ?>
-<h2>Step 2: Birth Number Reduction</h2>
-<p>Enter your birth date digits. No scrolling required.</p>
 
-<form id="birth_form" method="POST" action="<?= URLROOT; ?>/signup/step_2">
-    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <div>
-            <label style="display:block;">Month (MM)</label>
-            <input type="number" name="mm" placeholder="05" min="1" max="12" required style="width: 60px;">
+<div class="container signup-container">
+    <h2>Step 2: Birth Alignment</h2>
+    <p>Enter your date of birth to calculate your birth number and zodiac.</p>
+
+    <form action="<?php echo URLROOT; ?>/signup/step_2" method="POST">
+        <div class="form-group mb-4">
+            <label for="dob">Date of Birth</label>
+            <input type="date" name="dob" id="dob" class="form-control" required>
         </div>
-        <div>
-            <label style="display:block;">Day (DD)</label>
-            <input type="number" name="dd" placeholder="15" min="1" max="31" required style="width: 60px;">
+
+        <!-- THIS NAME MUST MATCH CONTROLLER CHECK -->
+        <button type="submit" name="calculate_birth_number" value="1" class="btn btn-primary w-100">
+            Calculate & Proceed
+        </button>
+    </form>
+
+    <?php if (!empty($_SESSION['signup_error'])): ?>
+        <div class="alert alert-danger mt-3">
+            Invalid date of birth. Use YYYY-MM-DD format.
         </div>
-        <div>
-            <label style="display:block;">Year (YYYY)</label>
-            <input type="number" name="yyyy" placeholder="1973" min="1900" max="<?= date('Y'); ?>" required style="width: 100px;">
-        </div>
-    </div>
-    
-    <button type="submit" name="calculate_birth_number">Calculate & Proceed</button>
-</form>
+        <?php unset($_SESSION['signup_error']); ?>
+    <?php endif; ?>
+
+</div>
+
 <?php require APPROOT . '/views/inc/foot.php'; ?>
