@@ -45,11 +45,3 @@ spl_autoload_register(function ($class) {
     }
 });
 
-// Sentinel
-$sentinel = __DIR__ . '/controllers/sentinel.php';
-if(file_exists($sentinel)) {
-    include $sentinel;
-    
-    $check = new sentinel();
-    $check::inspect();
-}
