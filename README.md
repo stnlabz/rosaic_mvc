@@ -9,14 +9,3 @@ structured, disciplined tradition.
 
 ## NOTICE
 **Ars Rosaic** and the **<a href="https://www.arsrosaic.org/s/indicia">Indicia Institute</a>** are directly related.
-
-## Update
-Setup `squire` in `/app/core/squire.php` and included in `/app/bootstrap.php`
-```php
-// 2. Squire: Static Data Maintenance & Vetting [cite: 2026-01-22]
-$squire = __DIR__ . '/core/squire.php';
-if(file_exists($squire)) {
-    require_once $squire;
-    squire::maintenance(); 
-}
-```
