@@ -9,6 +9,11 @@
             <label for="phone">Phone Number</label>
             <input type="text" name="phone" id="phone" class="form-control" placeholder="for secure transmission..." required>
         </div>
+        
+        <div class="form-group mb-3">
+            <label for="email_address">Email Address</label>
+            <input type="text" name="email_address" id="email_address" class="form-control" placeholder="for secure transmission..." required>
+        </div>
 
         <div class="form-group mb-3">
             <label for="address">Street Address</label>
@@ -21,7 +26,7 @@
         </div>
 
         <div class="form-group mb-3">
-            <label for="zip">ZIP Code</label>
+            <label for="zip_code">ZIP Code</label>
             <input type="text" name="zip_code" id="zip_code" class="form-control" placeholder="zip..." required>
         </div>
 

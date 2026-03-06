@@ -7,14 +7,14 @@ class maps_model extends model {
      * Filters members for map display.
      * Public: Strictly excludes Madam and Tactical assets.
      */
-    public function get_members_filtered($public = true) {
-        // Strict exclusion for the public map [cite: 2026-02-20]
-        $where = $public ? " WHERE m.is_m = 0 AND m.is_t = 0" : "";
+     public function get_members_filtered($public = false) {
+        // Admin view (default) shows everyone. Public hides Madam/Tactical.
+        $sql = "SELECT id, chosen_name, is_v, is_t, is_m, lat, lon, mgrs_coord FROM members";
         
-        $sql = "SELECT m.*, g.lat, g.lon, g.mgrs_coord 
-                FROM members m 
-                JOIN geo_cache g ON m.id = g.id" . $where;
-                
+        if ($public) {
+            $sql .= " WHERE is_m = 0 AND is_t = 0";
+        }
+
         return $this->fetchAll($sql);
     }
 
@@ -29,7 +29,7 @@ class maps_model extends model {
 
         if ($isAdmin) {
             // Pull the Nexus coordinates (Madam's house)
-            $sql = "SELECT g.lat, g.lon, m.coven_id 
+            $sql = "SELECT g.lat, g.lon, m.coven_id
                     FROM members m 
                     JOIN geo_cache g ON m.id = g.id 
                     WHERE m.is_m = 1 LIMIT 1";
@@ -41,6 +41,7 @@ class maps_model extends model {
                     if ($c['id'] == $nexus['coven_id']) {
                         $c['lat'] = $nexus['lat'];
                         $c['lon'] = $nexus['lon'];
+                        //$c['contact_email'] = $nexus['contact_email'];
                     }
                 }
             }

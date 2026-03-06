@@ -13,10 +13,6 @@
                 <td><?= $data['member_id']; ?></td>
             </tr>
             <tr>
-                <td style="font-weight: bold;">Numerical Alignment:</td>
-                <td><p>Your Birth Number is: <?php echo $data['birth_number']; ?></p></td>
-            </tr>
-            <tr>
                 <td style="font-weight: bold;">Authority:</td>
                 <td>The Office</td>
             </tr>

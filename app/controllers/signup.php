@@ -16,6 +16,7 @@ class signup extends controller
             $_SESSION['temp_signup'] = [
                 // contact + geo anchor
                 'contact_text' => trim((string)($_POST['phone'] ?? '')),
+                'email_address' => $_POST['email_address'],
                 'municipality' => trim((string)($_POST['city'] ?? '')),
                 'address'      => trim((string)($_POST['address'] ?? '')),
                 'zip_code'     => trim((string)($_POST['zip_code'] ?? '')),
@@ -83,10 +84,10 @@ class signup extends controller
         $current_q = $_SESSION['interrogation_step'] ?? 0;
 
         $questions = [
-            0 => "state your legal name for encryption.",
-            1 => "do you believe in wiccan and neo-pagan ranks, such as High Priestess or Arch Druid?",
-            2 => "identify your chosen name and initials. (Seperate with a Comma)",
-            3 => "verify your choice to walk a path to sovereignty, Yes or No"
+            0 => "State your legal name for encryption.",
+            1 => "Do you believe in wiccan and neo-pagan ranks, such as High Priestess or Arch Druid?",
+            2 => "Identify your chosen name and initials. (Seperate with a Comma)",
+            3 => "Verify your choice to walk a path to sovereignty, Yes or No"
         ];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -115,26 +116,68 @@ class signup extends controller
         $this->view('public/signup/step_3', $data);
     }
 
-    public function finalize()
-    {
-        if (!isset($_SESSION['temp_signup'])) {
-            header('Location: ' . URLROOT . '/signup/index');
-            exit;
-        }
+      public function finalize()
+{
+    if (!isset($_SESSION['temp_signup'])) {
+        header('Location: ' . URLROOT . '/signup');
+        exit;
+    }
 
-        $model = $this->model('signup_model');
+    $model = $this->model('signup_model');
 
-        $member_id = $model->register_final_member($_SESSION['temp_signup']);
+    $member_id = $model->register_final_member($_SESSION['temp_signup']);
 
-        if ($member_id) {
-            $data['member_id'] = $member_id;
-            unset($_SESSION['temp_signup'], $_SESSION['interrogation_step']);
-            $this->view('public/signup/finalize', $data);
-            return;
-        }
-
+    if (!$member_id) {
         die("critical error: signup insert failed.");
     }
+
+    $signup = $_SESSION['temp_signup'];
+    $data['member_id'] = $member_id;
+
+    // Pull geo data written during signup
+    $geo = $model->get_member_geo($member_id);
+
+    $mgrs = $geo['mgrs_coord'] ?? 'pending';
+    $lat  = $geo['lat'] ?? null;
+    $lon  = $geo['lon'] ?? null;
+
+    // Only search covens if geo exists
+    $coven = null;
+    if ($lat !== null && $lon !== null) {
+        $coven = $model->find_nearby_coven($lat, $lon);
+    }
+
+    $mailer = new mailer();
+    $mail = $mailer->create();
+
+    $mail->addAddress('office@arsrosaic.org');
+
+    if (!empty($coven['contact_email'])) {
+        $mail->addAddress($coven['contact_email']);
+    }
+
+    $mail->Subject = 'New Ars Rosaic Signup';
+
+    $mail->Body = "
+        <h3>New Member Signup</h3>
+        <b>Name:</b> {$signup['chosen_name']}<br>
+        <b>Municipality:</b> {$signup['municipality']}<br>
+        <b>Email:</b> {$signup['email_address']}<br>
+        <b>Phone:</b> {$signup['contact_text']}<br>
+        <b>Zip Code:</b> {$signup['zip_code']}<br>
+        <b>MGRS:</b> {$mgrs}<br>
+    ";
+
+    try {
+        $mail->send();
+    } catch (Exception $e) {
+        error_log('Signup mail failed: ' . $mail->ErrorInfo);
+    }
+
+    unset($_SESSION['temp_signup'], $_SESSION['interrogation_step']);
+
+    $this->view('public/signup/finalize', $data);
+}
 
     private function reduce_to_single($number)
     {
@@ -162,7 +205,7 @@ class signup extends controller
         return ($day <= $signs[$month - 1][1]) ? $signs[$month - 1][0] : $signs[$month][0];
     }
 
-    public function get_states($params): void
+     public function get_states($params): void
     {
         $rid = $params[2] ?? 0;
 

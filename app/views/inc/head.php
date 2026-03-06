@@ -43,7 +43,6 @@
             <a href="/">Home</a>
             <a href="/org/about">About</a>
             <a href="/signup">Signup</a>
-            <!--
             <?php if (isset($_SESSION['user_id'])): ?>
                 <?php if (isset($_SESSION['user_level']) && $_SESSION['user_level'] >= 9): ?>
                     <a href="/admin" class="btn btn-sm btn-outline-primary">Admin</a>
@@ -53,7 +52,6 @@
             <?php else: ?>
                 <a href="/login">Login</a>
             <?php endif; ?>
-            -->
         </nav>
     </header>
     <div class="container">

@@ -43,5 +43,11 @@ spl_autoload_register(function ($class) {
         require_once $core;
         return;
     }
+    
+    $lib = __DIR__ . '/lib/' . $class . '.php';
+    if (is_file($lib)) {
+        require_once $lib;
+        return;
+    }
 });
 

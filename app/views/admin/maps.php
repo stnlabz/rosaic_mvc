@@ -1,74 +1,99 @@
 <?php require APPROOT . '/views/inc/head.php'; ?>
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-    #strategic-map { background: #1a1a1a; height: 850px; width: 100%; border: 4px solid #333; }
+    .tactical-frame { height: 700px; width: 100%; background: #000; border: 1px solid #333; }
+    #strategic-map { height: 100%; width: 100%; }
+
+    @keyframes radar-ping {
+        0% { transform: scale(0.5); opacity: 1; }
+        80% { transform: scale(2.5); opacity: 0; }
+        100% { transform: scale(3); opacity: 0; }
+    }
+
+    .ping-effect {
+        border-radius: 50%;
+        background: currentColor;
+        animation: radar-ping 2s infinite ease-out;
+    }
 </style>
 
-<div class="container-fluid">
-    <div class="d-flex justify-content-between py-2 bg-dark text-success px-3">
-        <h2 class="h5 m-0 font-monospace text-uppercase">Tactical Command | Sector Status</h2>
+<div class="container-fluid py-2">
+    <div class="bg-dark text-success p-2 font-monospace border-bottom border-success mb-3">
+        COMMAND OVERWATCH // STABLE BUILD
     </div>
-    <div id="strategic-map"></div>
+    <div class="tactical-frame">
+        <div id="strategic-map"></div>
+    </div>
 </div>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-    // Center map on the Auburn/Tukwila Corridor
-    const map = L.map('strategic-map').setView([47.38, -122.23], 11);
+    const members = <?php echo json_encode($members ?? []); ?>;
+
+    const map = L.map('strategic-map');
 
     L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-        maxZoom: 17, attribution: 'Topography: © OpenTopoMap'
+        maxZoom: 17
     }).addTo(map);
 
-    function drawTacticalGrid() {
-        const gridLines = { color: '#00ff00', weight: 0.5, opacity: 0.3, interactive: false };
-        for (let l = 24; l <= 50; l += 0.2) L.polyline([[l, -125], [l, -65]], gridLines).addTo(map);
-        for (let n = -125; n <= -65; n += 0.2) L.polyline([[24, n], [50, n]], gridLines).addTo(map);
-    }
-    drawTacticalGrid();
-
-    const members = <?php echo json_encode($data['members'] ?? []); ?>;
-    const covens = <?php echo json_encode($data['covens'] ?? []); ?>;
+    const boundsGroup = L.featureGroup();
 
     members.forEach(m => {
-        if(m['lat'] && m['lon']) {
-            let color = '#ffffff00'; // Default: None (Seeker)
 
-            // 1. Higher Priority Overrides
-            if (m['is_m'] == 1) {
-                color = '#ff69b4'; // (10) Pink: Madam [cite: 2026-02-20]
-            } else if (m['is_t'] == 1) {
-                color = '#800000'; // (7) Blood Red: Tactical Veterans
-            } else if (m['is_v'] == 1) {
-                color = '#90ee90'; // (4) Light Green: Veterans (Adeptus-minor)
-            } else {
-                // 2. Standard Grade Colors [cite: 2026-02-13]
-                switch(parseInt(m['grade'])) {
-                    case 2: color = '#808080'; break; // Grey: Neophyte
-                    case 3: color = '#ffffff'; break; // White: Initiate
-                    case 5: color = '#800080'; break; // Purple: Priestess
-                    case 6: color = '#ff0000'; break; // Red: Adeptus
-                    case 8: color = '#ffff00'; break; // Yellow: Adeptus-Major
-                    case 9: color = '#0000ff'; break; // Blue: Soror/Frater
-                }
+        const lat = parseFloat(m.lat);
+        const lon = parseFloat(m.lon);
+        const isM = parseInt(m.is_m ?? 0);
+        const name = m.chosen_name ?? '';
+        const mgrs = m.mgrs_coord ?? '';
+
+        if (!isNaN(lat) && !isNaN(lon)) {
+
+            let fill = 'rgba(0,0,0,0)';
+            let border = '#00ff00';
+            let opacity = 0;
+
+            // Madam precedence
+            if (isM === 1 || name === 'M.R.') {
+                fill = '#ff69b4';
+                border = '#ffffff';
+                opacity = 1;
             }
 
-            L.circleMarker([m['lat'], m['lon']], {
-                radius: 8, color: '#fff', weight: 1, fillColor: color, fillOpacity: 0.9
-            }).addTo(map).bindPopup(`<div class="font-monospace"><b>${m['name']}</b><br>MGRS: ${m['mgrs_coord']}</div>`);
+            // Ping layer
+            L.marker([lat, lon], {
+                icon: L.divIcon({
+                    className: '',
+                    html: `<div class="ping-effect" style="color:${border}; width:14px; height:14px;"></div>`,
+                    iconSize: [14, 14]
+                }),
+                interactive: false
+            }).addTo(map);
+
+            // Main marker
+            const marker = L.circleMarker([lat, lon], {
+                radius: 10,
+                color: border,
+                weight: 2,
+                fillColor: fill,
+                fillOpacity: opacity
+            }).addTo(map)
+              .bindPopup(`<b>${name}</b><br>MGRS: ${mgrs}`);
+
+            boundsGroup.addLayer(marker);
         }
     });
 
-    covens.forEach(c => {
-        if(c['lat'] && c['lon']) {
-            let covenColor = (c['is_active'] == 1) ? '#6f42c1' : '#6c757d';
-            L.circle([c['lat'], c['lon']], {
-                color: covenColor, radius: 40233, fillOpacity: 0.15, weight: 2
-            }).addTo(map).bindPopup(`<div class="font-monospace"><b>COVEN:</b> ${c['coven_name']}</div>`);
-        }
-    });
+    if (boundsGroup.getLayers().length > 0) {
+        map.fitBounds(boundsGroup.getBounds(), { padding: [50, 50] });
+    } else {
+        map.setView([47.40, -122.25], 11);
+    }
+
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 300);
 </script>
 
 <?php require APPROOT . '/views/inc/foot.php'; ?>

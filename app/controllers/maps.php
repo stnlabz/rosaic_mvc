@@ -22,4 +22,5 @@ class maps extends controller {
         $data['members'] = $this->maps_model->get_members_filtered(false);
         $this->view('admin/maps', $data);
     }
+    
 }

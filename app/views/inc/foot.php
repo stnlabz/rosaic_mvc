@@ -3,12 +3,12 @@
     <div class="container">
         <div class="row text-secondary" style="font-size: 0.85em; font-family: serif;">
             
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <p>&copy; <?= date('Y') ?> Ars Rosaic.<br>
                 All rights reserved.</p>
             </div>
 
-            <div class="col-md-4 text-md-center">
+            <div class="col-md-3 text-md-center">
                 <ul class="list-unstyled">
                   <li><a href="/" class="text-decoration-none text-secondary">Home</a></li>
                   <li><a href="/org/about" class="text-decoration-none text-secondary">About</a></li>
@@ -16,8 +16,14 @@
                   <li><a href="/studies" class="text-decoration-none text-secondary">R&D</a></li
                 </ul>
             </div>
+            
+            <div class="col-md-3 text-md-center">
+                <ul class="list-unstyled">
+                  <li><a href="/maps" class="text-decoration-none text-secondary">Public Map</a></li>
+                </ul>
+            </div>
 
-            <div class="col-md-4 text-md-center">
+            <div class="col-md-3 text-md-center">
                 <ul class="list-unstyled">
                   <li><a href="/legal/charter" class="text-decoration-none text-secondary">Charter</a></li>
                   <li><a href="/legal/privacy" class="text-decoration-none text-secondary">Privacy Policy</a></li>
