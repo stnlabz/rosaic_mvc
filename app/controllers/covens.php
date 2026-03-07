@@ -4,6 +4,9 @@
 class covens extends controller
 {
     private $model;
+    
+    // Designation as a Core Module prevents deletion from the site/DB
+    public static $is_core = true;
 
     public function __construct()
     {

@@ -5,64 +5,82 @@ class accounts extends controller
     // Designation as a Core Module prevents deletion from the site/DB
     public static $is_core = true;
     
-    /*==========================
-        ADMIN ACCOUNT MANAGEMENT
-    ==========================*/
-    public function admin($url = [])
+    public function index()
     {
-        // Strictly Level 9 for Global Account Management
-        if (!isset($_SESSION['user_level']) || $_SESSION['user_level'] < 9) {
-            header("Location: /auth/login");
+        $model = $this->model('accounts_model');
+
+        $data['accounts'] = $model->get_all();
+
+        $this->view('admin/accounts', $data);
+    }
+    
+    /**
+     * Admin entry point
+     * Required so the admin index can see the module
+     */
+    public function admin()
+    {
+        $this->index();
+    }
+
+    
+    public function create()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . URLROOT . '/admin_accounts');
             exit;
         }
 
         $model = $this->model('accounts_model');
-        $offices_model = $this->model('offices_model');
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $model->create([
+            'username'     => trim($_POST['username']),
+            'password'     => $_POST['password'],
+            'display_name' => trim($_POST['display_name']),
+            'user_level'   => (int)$_POST['user_level'],
+            'is_active'    => isset($_POST['is_active']) ? 1 : 0
+        ]);
 
-            $action = $_POST['action'] ?? '';
+        header('Location: ' . URLROOT . '/admin/accounts');
+        exit;
+    }
 
-            if ($action === 'assign_office') {
-                $account_id = (int)($_POST['account_id'] ?? 0);
-                $office_id  = !empty($_POST['office_id']) ? (int)$_POST['office_id'] : null;
-
-                $model->assign_office($account_id, $office_id);
-
-                header("Location: /admin/accounts");
-                exit;
-            }
-
-            if ($action === 'promote_to_director') {
-                // Sets user to Level 7 and assigns to office
-                $account_id = (int)($_POST['account_id'] ?? 0);
-                $office_id  = (int)($_POST['office_id'] ?? 0);
-
-                if ($account_id > 0 && $office_id > 0) {
-                    $model->update_level($account_id, 7);
-                    $model->assign_office($account_id, $office_id);
-                }
-
-                header("Location: /admin/accounts");
-                exit;
-            }
-
-            if ($action === 'demote_to_staff') {
-                // Reverts user to Level 1
-                $account_id = (int)($_POST['account_id'] ?? 0);
-
-                if ($account_id > 0) {
-                    $model->update_level($account_id, 1);
-                }
-
-                header("Location: /admin/accounts");
-                exit;
-            }
+    public function update($id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . URLROOT . '/admin/accounts');
+            exit;
         }
 
-        $data['accounts'] = $model->get_all();
-        $data['offices']  = $offices_model->get_all_active();
+        $model = $this->model('accounts_model');
 
-        $this->view('admin/accounts', $data);
+        $model->update(
+    'accounts',
+    [
+        'username' => trim($_POST['username']),
+        'display_name' => trim($_POST['display_name']),
+        'user_level' => (int)$_POST['user_level'],
+        'is_active' => isset($_POST['is_active']) ? 1 : 0
+    ],
+    'id = :id',
+    ['id' => $id]
+);
+
+        if (!empty($_POST['password'])) {
+            $model->change_password($id, $_POST['password']);
+        }
+
+        header('Location: ' . URLROOT . '/admin/accounts');
+        exit;
+    }
+
+    public function delete($id)
+    {
+        $model = $this->model('accounts_model');
+
+        $model->delete($id);
+
+        header('Location: ' . URLROOT . '/admin/accounts');
+        exit;
     }
 }
