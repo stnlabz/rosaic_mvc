@@ -2,7 +2,7 @@
 
 <div class="container mt-4">
 
-<h2>Accounts</h2>
+<h2>Account Management</h2>
 
 <table class="table table-bordered">
 <thead>
@@ -11,25 +11,48 @@
 <th>Username</th>
 <th>Name</th>
 <th>Level</th>
-<th>Active</th>
-<th>Actions</th>
+<th>Password</th>
+<th>Delete</th>
 </tr>
 </thead>
+
 <tbody>
 
 <?php foreach ($data['accounts'] as $a): ?>
 
 <tr>
+
 <td><?php echo $a['id']; ?></td>
+
 <td><?php echo htmlspecialchars($a['username']); ?></td>
+
 <td><?php echo htmlspecialchars($a['display_name']); ?></td>
+
 <td><?php echo $a['user_level']; ?></td>
-<td><?php echo $a['is_active'] ? 'yes' : 'no'; ?></td>
 
 <td>
-<form method="POST" action="<?php echo URLROOT; ?>/admin_accounts/delete/<?php echo $a['id']; ?>">
-<button class="btn btn-sm btn-danger">delete</button>
+
+<form method="POST" action="<?php echo URLROOT; ?>/admin_accounts/password/<?php echo $a['id']; ?>">
+<input type="password" name="password" placeholder="new password" required>
+<button type="submit">change</button>
 </form>
+
+</td>
+
+<td>
+
+<?php if ($a['id'] != ($_SESSION['account_id'] ?? 0)): ?>
+
+<form method="POST" action="<?php echo URLROOT; ?>/admin/accounts/delete/<?php echo $a['id']; ?>">
+<button type="submit">delete</button>
+</form>
+
+<?php else: ?>
+
+logged in
+
+<?php endif; ?>
+
 </td>
 
 </tr>
@@ -37,12 +60,14 @@
 <?php endforeach; ?>
 
 </tbody>
+
 </table>
 
+<hr>
 
 <h3>Create Account</h3>
 
-<form method="POST" action="<?php echo URLROOT; ?>/admin_accounts/create">
+<form method="POST" action="<?php echo URLROOT; ?>/admin/accounts/create">
 
 <div class="mb-2">
 <label>Username</label>
@@ -59,18 +84,12 @@
 <input type="text" name="display_name" class="form-control">
 </div>
 
-<div class="mb-2">
+<div class="mb-3">
 <label>User Level</label>
 <input type="number" name="user_level" class="form-control" value="1">
 </div>
 
-<div class="mb-3">
-<label>
-<input type="checkbox" name="is_active" checked> Active
-</label>
-</div>
-
-<button class="btn btn-primary">Create Account</button>
+<button type="submit" class="btn btn-primary">Create Account</button>
 
 </form>
 

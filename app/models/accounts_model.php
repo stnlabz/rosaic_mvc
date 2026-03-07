@@ -3,56 +3,43 @@
 class accounts_model extends model
 {
 
-    public function get_all()
+    public function all()
     {
         return $this->fetchAll(
-            "SELECT id, username, display_name, user_level, is_active, created_at
+            "SELECT id, username, user_level, display_name
              FROM accounts
              ORDER BY id ASC"
         );
     }
 
 
-    public function get($id)
+    public function create($username, $password, $name, $level)
     {
-        return $this->fetch(
-            "SELECT id, username, display_name, user_level, is_active
-             FROM accounts
-             WHERE id = :id
-             LIMIT 1",
-            ['id' => (int)$id]
+        $this->query(
+            "INSERT INTO accounts
+            (username, password_hash, display_name, user_level)
+            VALUES
+            (:u, :p, :n, :l)",
+            [
+                'u' => $username,
+                'p' => password_hash($password, PASSWORD_DEFAULT),
+                'n' => $name,
+                'l' => (int)$level
+            ]
         );
-    }
-
-
-    public function create($data)
-    {
-        $sql = "INSERT INTO accounts
-                (username, password_hash, display_name, user_level, is_active)
-                VALUES
-                (:username, :password_hash, :display_name, :user_level, :is_active)";
-
-        $params = [
-            'username'      => $data['username'],
-            'password_hash' => password_hash($data['password'], PASSWORD_DEFAULT),
-            'display_name'  => $data['display_name'],
-            'user_level'    => (int)$data['user_level'],
-            'is_active'     => (int)$data['is_active']
-        ];
-
-        $this->query($sql, $params);
-
-        return $this->db->lastInsertId();
     }
 
 
     public function change_password($id, $password)
     {
-        $this->update(
-            'accounts',
-            ['password_hash' => password_hash($password, PASSWORD_DEFAULT)],
-            'id = :id',
-            ['id' => (int)$id]
+        $this->query(
+            "UPDATE accounts
+             SET password_hash = :p
+             WHERE id = :id",
+            [
+                'p'  => password_hash($password, PASSWORD_DEFAULT),
+                'id' => (int)$id
+            ]
         );
     }
 
